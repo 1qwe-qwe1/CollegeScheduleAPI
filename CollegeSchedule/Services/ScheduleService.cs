@@ -88,16 +88,26 @@ namespace CollegeSchedule.Services
             var lessonDto = new LessonDto
             {
                 LessonNumber = lessonGroup.Key.LessonNumber,
-                Time = $"{lessonGroup.Key.TimeStart:hh\\:mm}-{ lessonGroup.Key.TimeEnd:hh\\:mm}", 
+                Time = $"{lessonGroup.Key.TimeStart:HH\\:mm}-{ lessonGroup.Key.TimeEnd:HH\\:mm}", 
                 GroupParts = new Dictionary<LessonGroupPart, LessonPartDto?>()
             }; 
  
             foreach (var part in lessonGroup) 
-            { 
+            {
+                var firstNameInitial = !string.IsNullOrEmpty(part.Teacher.FirstName)
+                    ? part.Teacher.FirstName[0].ToString() + "."
+                    : "";
+
+                var middleNameInitial = !string.IsNullOrEmpty(part.Teacher.MiddleName)
+                    ? part.Teacher.MiddleName[0].ToString() + "."
+                    : "";
+
+                var teacherName = $"{part.Teacher.LastName} {firstNameInitial} {middleNameInitial}".TrimEnd();
+
                 lessonDto.GroupParts[part.GroupPart] = new LessonPartDto 
                 { 
                     Subject = part.Subject.Name, 
-                    Teacher = $"{part.Teacher.LastName} {part.Teacher.FirstName} {part.Teacher.MiddleName}", 
+                    Teacher = teacherName, 
                     TeacherPosition = part.Teacher.Position, 
                     Classroom = part.Classroom.RoomNumber, 
                     Building = part.Classroom.Building.Name, 
